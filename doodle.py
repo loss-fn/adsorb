@@ -5,13 +5,13 @@ import random
 import curses
 
 def gen_board(my, mx):
-    sy, sx = my - 1, mx - 1
-    if sy > sx:
-        sy = sx
-    elif sx > sy:
-        sx = sy
+    by, bx = my - 2, mx - 2
+    if by > bx:
+        by = bx
+    elif bx > by:
+        bx = by
 
-    board = [['0' for _ in range(sx)] for _ in range(sy)]
+    board = [['0' for _ in range(bx)] for _ in range(by)]
 
     ## make the board irregular
 
@@ -22,10 +22,18 @@ def gen_board(my, mx):
         if random.random() >= 0.5:
             board[y][x] = ' '
 
-    return sy, sx, board
+    return by, bx, board
 
 def game(stdscr):
-    view(stdscr, *gen_board(*stdscr.getmaxyx()))
+    bx, by, board = gen_board(*stdscr.getmaxyx())
+    view(stdscr, bx, by, board)
+
+    # main loop (quit using <ESC>)
+    while True:
+        key = stdscr.getch()
+        if key == 27: # 27 is the <ESC> ASCII code
+            raise Exception("%d %d" % (y, x))
+
 
 def view(stdscr, sy, sx, board):
     # hide cursor
@@ -43,12 +51,6 @@ def view(stdscr, sy, sx, board):
         y += 1
 
     stdscr.refresh()
-
-    # wait for user to press <ESC>
-    while True:
-        key = stdscr.getch()
-        if key == 27: # 27 is the <ESC> ASCII code
-            raise Exception("%d %d" % (y, x))
 
 if __name__ == "__main__":
     curses.wrapper(game)
