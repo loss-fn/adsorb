@@ -28,12 +28,18 @@ def game(stdscr):
     bx, by, board = gen_board(*stdscr.getmaxyx())
     view(stdscr, bx, by, board)
 
-    # main loop (quit using <ESC>)
+    actions = { 27 : quit, } # 27 is the <ESC> ASCII code
+
+    # main loop
     while True:
         key = stdscr.getch()
-        if key == 27: # 27 is the <ESC> ASCII code
-            raise Exception("%d %d" % (y, x))
+        try:
+            actions[key](board)
+        except KeyError: 
+            pass
 
+def quit(_):
+    raise KeyboardInterrupt
 
 def view(stdscr, sy, sx, board):
     # hide cursor
@@ -53,4 +59,7 @@ def view(stdscr, sy, sx, board):
     stdscr.refresh()
 
 if __name__ == "__main__":
-    curses.wrapper(game)
+    try:
+        curses.wrapper(game)
+    except KeyboardInterrupt:
+        pass
