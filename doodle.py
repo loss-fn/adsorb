@@ -14,7 +14,7 @@ def gen_board(my, mx):
     board = [['0' for _ in range(sx)] for _ in range(sy)]
 
     ## make the board irregular
-    
+
     # TODO add some random sizes here instead of just removing
     # the square with a probability of 50%
 
@@ -31,12 +31,14 @@ def view(stdscr, sy, sx, board):
     # hide cursor
     curses.curs_set(0)
 
+    my, mx = stdscr.getmaxyx()
+    py, px = int((my - sy) / 2), int((mx - sx) / 2)
     # output the board on the screen
     y = 0
     for row in board:
         x = 0
         for col in row:
-            stdscr.addch(y,x, col)
+            stdscr.addch(y + py, x + px, col)
             x += 1
         y += 1
 
