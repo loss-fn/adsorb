@@ -1,5 +1,7 @@
 ## adsorb
 
+import random
+
 import curses
 
 def gen_board(my, mx):
@@ -9,7 +11,18 @@ def gen_board(my, mx):
     elif sx > sy:
         sx = sy
 
-    return sy, sx, [['*' for _ in range(sx)] for _ in range(sy)]
+    board = [['0' for _ in range(sx)] for _ in range(sy)]
+
+    ## make the board irregular
+    
+    # TODO add some random sizes here instead of just removing
+    # the square with a probability of 50%
+
+    for y, x in [(0,0), (0,-1), (-1,-1), (-1,0)]:
+        if random.random() >= 0.5:
+            board[y][x] = ' '
+
+    return sy, sx, board
 
 def game(stdscr):
     view(stdscr, *gen_board(*stdscr.getmaxyx()))
