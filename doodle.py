@@ -3,12 +3,18 @@
 import curses
 
 def gen_board(my, mx):
-    return [['*' for _ in range(mx - 1)] for _ in range(my - 1)]
+    sy, sx = my - 1, mx - 1
+    if sy > sx:
+        sy = sx
+    elif sx > sy:
+        sx = sy
+
+    return sy, sx, [['*' for _ in range(sx)] for _ in range(sy)]
 
 def game(stdscr):
-    view(stdscr, gen_board(*stdscr.getmaxyx()))
+    view(stdscr, *gen_board(*stdscr.getmaxyx()))
 
-def view(stdscr, board):
+def view(stdscr, sy, sx, board):
     # hide cursor
     curses.curs_set(0)
 
