@@ -2,14 +2,11 @@
 
 import curses
 
-__BOARD__ = [['*','*','*','*','*','*','*',],
-             ['*','*','*','*','*','*','*',],
-             ['*','*','*','*','*','*','*',],
-             ['*','*','*','*','*','*','*',],
-             ['*','*','*','*','*','*','*',]]
+def gen_board(my, mx):
+    return [['*' for _ in range(mx - 1)] for _ in range(my - 1)]
 
 def game(stdscr):
-    view(stdscr, __BOARD__)
+    view(stdscr, gen_board(*stdscr.getmaxyx()))
 
 def view(stdscr, board):
     # hide cursor
