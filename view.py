@@ -6,6 +6,9 @@ def init(stdscr, sy, sx, board):
     # hide cursor
     curses.curs_set(0)
 
+    # turn on mouse events
+    curses.mousemask(1)
+
     # initialize colors
     curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_WHITE)
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_GREEN)
