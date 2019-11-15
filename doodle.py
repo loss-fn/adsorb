@@ -22,10 +22,14 @@ def game(stdscr):
     while True:
         key = players[player].action(stdscr, board, py, px)
         try:
-            board = actions[key](player, board, py, px)
-            view.update(stdscr, h, w, board)
-            player = 1 - player
-            
+            board, status = actions[key](player, board, py, px)
+            if status == 1:
+                view.update(stdscr, h, w, board)
+                player = 1 - player
+
+            else: # the player chose an invalid move
+                view.invalid_move()
+
         except KeyError: 
             # any key pressed that is not associated with
             # an action will end up here
@@ -36,16 +40,20 @@ def mouse(player, board, py, px):
 
     # update board
     _x, _y = x - px, y - py
-    v = model.get(_y, _x, board)
-    if v == '0':
-        board = model.place(str(player + 1), _y, _x, board)
-    else:
-        board = model.remove(str(player + 1), _y, _x, board)
+    try:
+        v = model.get(_y, _x, board)
+        if v == '0':
+            board, status = model.place(str(player + 1), _y, _x, board)
+        else:
+            board, status = model.remove(str(player + 1), _y, _x, board)
+    except IndexError:
+        status = 0
 
-    return board
+    return board, status
 
 def _pass(player, board, *rest):
-    return board
+    status = 1
+    return board, status
 
 def quit(*args):
     raise KeyboardInterrupt

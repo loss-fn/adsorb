@@ -26,10 +26,15 @@ def get(y, x, board):
     return board[y][x]
 
 def place(p, y, x, board):
-    board[y][x] = p
-    return board
+    status = 0
+    if board[y][x] == '0':
+        status = 1
+        board[y][x] = p
+    return board, status
 
 def remove(p, y, x, board):
+    status = 0
     if board[y][x] == p:
-        board[y][x] = 0
-    return board
+        status = 1
+        board[y][x] = '0'
+    return board, status
