@@ -3,13 +3,13 @@
 import random
 
 def gen_board(my, mx):
-    by, bx = my - 2, mx - 2
-    if by > bx:
-        by = bx
-    elif bx > by:
-        bx = by
+    h, w = my - 2, mx - 2
+    if h > w:
+        h = w
+    elif w > h:
+        w = h
 
-    board = [['0' for _ in range(bx)] for _ in range(by)]
+    board = [['0' for _ in range(w)] for _ in range(h)]
 
     ## make the board irregular
 
@@ -20,5 +20,16 @@ def gen_board(my, mx):
         if random.random() >= 0.5:
             board[y][x] = ' '
 
-    return by, bx, board
+    return h, w, board
 
+def get(y, x, board):
+    return board[y][x]
+
+def place(p, y, x, board):
+    board[y][x] = p
+    return board
+
+def remove(p, y, x, board):
+    if board[y][x] == p:
+        board[y][x] = 0
+    return board
