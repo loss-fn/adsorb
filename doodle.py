@@ -14,27 +14,41 @@ def game(stdscr):
     players = { 0 : ui,
                 1 : cpu, }
 
-    actions = { 27 : quit, # 27 is the <ESC> ASCII code
-                32 : _pass, # 32 is the <SPACE> ASCII code
-                curses.KEY_MOUSE : mouse, }
+    actions = { 'QUIT'  : _quit,
+                'PASS'  : _pass,
+                'PLACE'  : _place,
+                'REMOVE': _remove,
+                'UNFOLD': _unfold }
 
     # main loop
     player = 0
     while True:
-        key = players[player].action(stdscr, board, py, px)
-        try:
-            board, status = actions[key](player, board, py, px)
-            if status == 1:
-                view.update(stdscr, h, w, board)
-                player = 1 - player
+        action, y, x, direction = players[player].get_action(stdscr, player, board, py, px)
+        board, status = actions[action](player, board, y, x, direction)
+        if status == 1:
+            view.update(stdscr, h, w, board)
+            player = 1 - player
 
-            else: # the player chose an invalid move
-                view.invalid_move()
+        else: # the player chose an invalid move
+            view.invalid_move()
 
-        except KeyError: 
-            # any key pressed that is not associated with
-            # an action will end up here
-            pass
+def _quit(*rest):
+    raise KeyboardInterrupt
+
+def _pass(player, board, *rest):
+    status = 1
+    return board, status
+
+def _place(player, board, y, x, *rest):
+    board, status = model.place(str(player + 1), y, x, board)
+    return board, status
+
+def _remove(player, board, y, x, *rest):
+    board, status = model.remove(str(player + 1), y, x, board)
+    return board, status
+
+def _unfold(player, board, y, x, direction, *rest):
+    raise NotImplementedError
 
 def mouse(player, board, py, px):
     _, x, y, _, _ = curses.getmouse()
@@ -52,12 +66,6 @@ def mouse(player, board, py, px):
 
     return board, status
 
-def _pass(player, board, *rest):
-    status = 1
-    return board, status
-
-def quit(*args):
-    raise KeyboardInterrupt
 
 if __name__ == "__main__":
     try:

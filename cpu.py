@@ -4,7 +4,7 @@ import random
 
 import curses
 
-def action(_, board, py, px, max_attempts = 10):
+def get_action(_, player, board, py, px, max_attempts = 10):
     attempt = 0
     while True:
         attempt += 1
@@ -12,8 +12,7 @@ def action(_, board, py, px, max_attempts = 10):
         y, x = random.randint(0, h-1), random.randint(0, w-1)
 
         if board[y][x] == '0':
-            curses.ungetmouse(0, px + x, py + y, 0, curses.BUTTON1_CLICKED)
-            return curses.KEY_MOUSE
+            return 'PLACE', y, x, 0
 
         if attempt >= max_attempts:
-            return ord(' ') # <SPACE> is pass
+            return 'PASS', 0, 0, 0
