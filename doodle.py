@@ -1,32 +1,13 @@
 ## adsorb
 
-import random
-
 import curses
 
-def gen_board(my, mx):
-    by, bx = my - 2, mx - 2
-    if by > bx:
-        by = bx
-    elif bx > by:
-        bx = by
-
-    board = [['0' for _ in range(bx)] for _ in range(by)]
-
-    ## make the board irregular
-
-    # TODO add some random sizes here instead of just removing
-    # the square with a probability of 50%
-
-    for y, x in [(0,0), (0,-1), (-1,-1), (-1,0)]:
-        if random.random() >= 0.5:
-            board[y][x] = ' '
-
-    return by, bx, board
+import view
+import model
 
 def game(stdscr):
-    bx, by, board = gen_board(*stdscr.getmaxyx())
-    view(stdscr, bx, by, board)
+    bx, by, board = model.gen_board(*stdscr.getmaxyx())
+    view.init(stdscr, bx, by, board)
 
     actions = { 27 : quit, } # 27 is the <ESC> ASCII code
 
@@ -40,29 +21,6 @@ def game(stdscr):
 
 def quit(_):
     raise KeyboardInterrupt
-
-def view(stdscr, sy, sx, board):
-    # hide cursor
-    curses.curs_set(0)
-
-    # initialize colors
-    curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_WHITE)
-    curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_GREEN)
-    curses.init_pair(3, curses.COLOR_RED, curses.COLOR_RED)
-
-    my, mx = stdscr.getmaxyx()
-    py, px = int((my - sy) / 2), int((mx - sx) / 2)
-    # output the board on the screen
-    y = 0
-    for row in board:
-        x = 0
-        for col in row:
-            if col != ' ':
-                stdscr.addstr(y + py, x + px, ' ', curses.color_pair(int(col) + 1))
-            x += 1
-        y += 1
-
-    stdscr.refresh()
 
 if __name__ == "__main__":
     try:
