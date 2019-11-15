@@ -7,7 +7,7 @@ def init(stdscr, h, w, board):
     curses.curs_set(0)
 
     # turn on mouse events
-    curses.mousemask(1)
+    curses.mousemask(curses.ALL_MOUSE_EVENTS)
 
     # initialize colors
     curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_WHITE)

@@ -3,6 +3,7 @@
 import curses
 
 import ui
+import cpu
 import view
 import model
 
@@ -11,7 +12,7 @@ def game(stdscr):
     py, px = view.init(stdscr, h, w, board)
 
     players = { 0 : ui,
-                1 : ui, }
+                1 : cpu, }
 
     actions = { 27 : quit, # 27 is the <ESC> ASCII code
                 32 : _pass, # 32 is the <SPACE> ASCII code
