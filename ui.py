@@ -17,12 +17,12 @@ def get_action(stdscr, player, board, py, px):
                 # and still have it count as a move
                 if _x < 0 or _y < 0:
                     raise IndexError
-                
+
                 v = board[_y][_x]
                 if v == '0':
                     return 'PLACE', _y, _x, 0
 
-                elif v == str(player):
+                elif v == str(player + 1):
                     return 'REMOVE', _y, _x, 0
 
             except IndexError:
