@@ -12,6 +12,12 @@ def get_action(stdscr, player, board, py, px):
             _x, _y = x - px, y - py
             _x = math.floor(_x / 2)
             try:
+                # since -1 is a valid index the player can click
+                # on a square above or to the left of the board
+                # and still have it count as a move
+                if _x < 0 or _y < 0:
+                    raise IndexError
+                
                 v = board[_y][_x]
                 if v == '0':
                     return 'PLACE', _y, _x, 0
