@@ -39,5 +39,5 @@ def remove(p, y, x, board):
         board[y][x] = '0'
     return board, status
 
-def unfold(p, y, x, direction, board):
+def copy(p, y, x, direction, board):
     raise NotImplementedError

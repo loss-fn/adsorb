@@ -16,9 +16,9 @@ def game(stdscr):
 
     actions = { 'QUIT'  : _quit,
                 'PASS'  : _pass,
-                'PLACE'  : _place,
+                'PLACE' : _place,
                 'REMOVE': _remove,
-                'UNFOLD': _unfold }
+                'COPY'  : _copy }
 
     # main loop
     player = 0
@@ -44,8 +44,8 @@ def _remove(player, board, y, x, *rest):
     board, status = model.remove(str(player + 1), y, x, board)
     return board, status
 
-def _unfold(player, board, y, x, direction, *rest):
-    board, status = model.unfold(str(player + 1), y, x, direction, board)
+def _copy(player, board, y, x, direction, *rest):
+    board, status = model.copy(str(player + 1), y, x, direction, board)
     return board, status
 
 if __name__ == "__main__":
