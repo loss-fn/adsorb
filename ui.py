@@ -1,5 +1,7 @@
 ## adsorb - user interface for human player
 
+import math
+
 import curses
 
 def get_action(stdscr, player, board, py, px):
@@ -8,6 +10,7 @@ def get_action(stdscr, player, board, py, px):
         if key == curses.KEY_MOUSE:
             _, x, y, _, _ = curses.getmouse()
             _x, _y = x - px, y - py
+            _x = math.floor(_x / 2)
             try:
                 v = board[_y][_x]
                 if v == '0':

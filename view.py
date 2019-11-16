@@ -20,15 +20,17 @@ def init(stdscr, h, w, board):
 
 def update(stdscr, h, w, board):
     my, mx = stdscr.getmaxyx()
-    py, px = int((my - h) / 2), int((mx - w) / 2)
+    py, px = int((my - h) / 2), int((mx - (2 * w)) / 2)
     # output the board on the screen
+    # since the x/y pixel ratio is close to 2/1 the view will
+    # look better if we use two chars per square on the board 
     y = 0
     for row in board:
         x = 0
         for col in row:
             if col != ' ':
-                stdscr.addstr(y + py, x + px, ' ', curses.color_pair(int(col) + 1))
-            x += 1
+                stdscr.addstr(y + py, x + px, '  ', curses.color_pair(int(col) + 1))
+            x += 2
         y += 1
 
     stdscr.refresh()
