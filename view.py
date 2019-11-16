@@ -36,6 +36,3 @@ def update(stdscr, h, w, board):
     stdscr.refresh()
 
     return py, px
-
-def invalid_move():
-    curses.flash()

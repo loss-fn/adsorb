@@ -29,9 +29,6 @@ def game(stdscr):
             view.update(stdscr, h, w, board)
             player = 1 - player
 
-        else: # the player chose an invalid move
-            view.invalid_move()
-
 def _quit(*rest):
     raise KeyboardInterrupt
 
@@ -48,24 +45,8 @@ def _remove(player, board, y, x, *rest):
     return board, status
 
 def _unfold(player, board, y, x, direction, *rest):
-    raise NotImplementedError
-
-def mouse(player, board, py, px):
-    _, x, y, _, _ = curses.getmouse()
-
-    # update board
-    _x, _y = x - px, y - py
-    try:
-        v = model.get(_y, _x, board)
-        if v == '0':
-            board, status = model.place(str(player + 1), _y, _x, board)
-        else:
-            board, status = model.remove(str(player + 1), _y, _x, board)
-    except IndexError:
-        status = 0
-
+    board, status = model.unfold(str(player + 1), y, x, direction, board)
     return board, status
-
 
 if __name__ == "__main__":
     try:

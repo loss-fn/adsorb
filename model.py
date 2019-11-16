@@ -38,3 +38,6 @@ def remove(p, y, x, board):
         status = 1
         board[y][x] = '0'
     return board, status
+
+def unfold(p, y, x, direction, board):
+    raise NotImplementedError
