@@ -29,4 +29,9 @@ class Board(object):
         return status
 
     def copy(self, p, y, x, direction):
-        raise NotImplementedError
+        status = 0
+        if self.board[y][x] == str(p + 1):
+            if y > 0 and self.board[y-1][x] == 0:
+                status = 1
+                self.board[y-1][x] = str(p + 1)
+        return status

@@ -14,5 +14,8 @@ def get_action(_, player, board, py, px, max_attempts = 10):
         if board.get(y, x) == '0':
             return 'PLACE', y, x, 0
 
+        if board.get(y, x) == str(player + 1):
+            return 'COPY', y, x, 'UP'
+
         if attempt >= max_attempts:
             return 'PASS', 0, 0, 0
