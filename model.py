@@ -18,12 +18,12 @@ class Board(object):
         status = 0
         if self.board[y][x] == '0':
             status = 1
-            self.board[y][x] = p
+            self.board[y][x] = str(p + 1)
         return status
 
     def remove(self, p, y, x):
         status = 0
-        if self.board[y][x] == p:
+        if self.board[y][x] == str(p + 1):
             status = 1
             self.board[y][x] = '0'
         return status

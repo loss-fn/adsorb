@@ -39,15 +39,15 @@ class Game(object):
         return status
 
     def _place(self, player, y, x, *rest):
-        status = self.board.place(str(player + 1), y, x)
+        status = self.board.place(player, y, x)
         return status
 
     def _remove(self, player, y, x, *rest):
-        status = self.board.remove(str(player + 1), y, x)
+        status = self.board.remove(player, y, x)
         return status
 
     def _copy(self, player, y, x, direction, *rest):
-        status = self.board.copy(str(player + 1), y, x, direction)
+        status = self.board.copy(player, y, x, direction)
         return status
 
 if __name__ == "__main__":
