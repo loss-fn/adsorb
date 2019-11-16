@@ -7,49 +7,52 @@ import cpu
 import view
 import model
 
-def game(stdscr):
-    h, w, board = model.gen_board(*stdscr.getmaxyx())
-    py, px = view.init(stdscr, h, w, board)
+class Game(object):
+    def __init__(self, p1, p2):
+        self.board = model.Board()
 
-    players = { 0 : ui,
-                1 : cpu, }
+        self.players = { 0 : p1,
+                         1 : p2, }
+        self.actions = { 'QUIT'  : self._quit,
+                         'PASS'  : self._pass,
+                         'PLACE' : self._place,
+                         'REMOVE': self._remove,
+                         'COPY'  : self._copy }
 
-    actions = { 'QUIT'  : _quit,
-                'PASS'  : _pass,
-                'PLACE' : _place,
-                'REMOVE': _remove,
-                'COPY'  : _copy }
+    def curses(self, stdscr):
+        py, px = view.init(stdscr, self.board)
 
-    # main loop
-    player = 0
-    while True:
-        action, y, x, direction = players[player].get_action(stdscr, player, board, py, px)
-        board, status = actions[action](player, board, y, x, direction)
-        if status == 1:
-            view.update(stdscr, h, w, board)
-            player = 1 - player
+        # main loop
+        player = 0
+        while True:
+            action, y, x, direction = self.players[player].get_action(stdscr, player, self.board, py, px)
+            status = self.actions[action](player, y, x, direction)
+            if status == 1:
+                view.update(stdscr, self.board)
+                player = 1 - player
 
-def _quit(*rest):
-    raise KeyboardInterrupt
+    def _quit(self, *rest):
+        raise KeyboardInterrupt
 
-def _pass(player, board, *rest):
-    status = 1
-    return board, status
+    def _pass(self, player, *rest):
+        status = 1
+        return status
 
-def _place(player, board, y, x, *rest):
-    board, status = model.place(str(player + 1), y, x, board)
-    return board, status
+    def _place(self, player, y, x, *rest):
+        status = self.board.place(str(player + 1), y, x)
+        return status
 
-def _remove(player, board, y, x, *rest):
-    board, status = model.remove(str(player + 1), y, x, board)
-    return board, status
+    def _remove(self, player, y, x, *rest):
+        status = self.board.remove(str(player + 1), y, x)
+        return status
 
-def _copy(player, board, y, x, direction, *rest):
-    board, status = model.copy(str(player + 1), y, x, direction, board)
-    return board, status
+    def _copy(self, player, y, x, direction, *rest):
+        status = self.board.copy(str(player + 1), y, x, direction)
+        return status
 
 if __name__ == "__main__":
     try:
-        curses.wrapper(game)
+        game = Game(p1 = ui, p2 = cpu)
+        curses.wrapper(game.curses)
     except KeyboardInterrupt:
         pass

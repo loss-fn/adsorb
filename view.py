@@ -2,7 +2,7 @@
 
 import curses
 
-def init(stdscr, h, w, board):
+def init(stdscr, board):
     # hide cursor
     curses.curs_set(0)
 
@@ -14,18 +14,17 @@ def init(stdscr, h, w, board):
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_GREEN)
     curses.init_pair(3, curses.COLOR_RED, curses.COLOR_RED)
 
-    py, px = update(stdscr, h, w, board)
+    return update(stdscr, board)
 
-    return py, px 
-
-def update(stdscr, h, w, board):
+def update(stdscr, board):
     my, mx = stdscr.getmaxyx()
+    h, w = board.size
     py, px = int((my - h) / 2), int((mx - (2 * w)) / 2)
     # output the board on the screen
     # since the x/y pixel ratio is close to 2/1 the view will
     # look better if we use two chars per square on the board 
     y = 0
-    for row in board:
+    for row in board.board:
         x = 0
         for col in row:
             if col != ' ':

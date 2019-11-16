@@ -18,7 +18,7 @@ def get_action(stdscr, player, board, py, px):
                 if _x < 0 or _y < 0:
                     raise IndexError
 
-                v = board[_y][_x]
+                v = board.get(_y, _x)
                 if v == '0':
                     return 'PLACE', _y, _x, 0
 
