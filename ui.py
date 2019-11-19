@@ -18,12 +18,39 @@ def get_action(stdscr, player, board, py, px):
                 if _x < 0 or _y < 0:
                     raise IndexError
 
+                # updating the board is a two-step process. First
+                # player's select a square and second they decide
+                # what action to take.
                 v = board.get(_y, _x)
                 if v == '0':
+                    # player clicked on an empty square
+                    # add a '+' sign to indicate that 'place'
+                    # is a valid next move
+                    return 'MARK_PLACE', _y, _x, 0
+
+                elif v == '+':
                     return 'PLACE', _y, _x, 0
 
                 elif v == str(player + 1):
+                    # player clicked on an own square
+                    # add a '-' sign and arrows to indicate that
+                    # 'remove' and 'copy' are valid next moves
+                    return 'MARK_COPY_AND_REMOVE', _y, _x, 0
+
+                elif v == '-':
                     return 'REMOVE', _y, _x, 0
+
+                elif v == '↑':
+                    return 'COPY', _y, _x, 'UP'
+
+                elif v == '↓':
+                    return 'COPY', _y, _x, 'DOWN'
+
+                elif v == '←':
+                    return 'COPY', _y, _x, 'LEFT'
+
+                elif v == '→':
+                    return 'COPY', _y, _x, 'RIGHT'
 
             except IndexError:
                 # player clicked outside of the board area

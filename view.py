@@ -14,7 +14,15 @@ def init(stdscr, board):
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_GREEN)
     curses.init_pair(3, curses.COLOR_RED, curses.COLOR_RED)
 
+    curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_WHITE)
+    curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_GREEN)
+    curses.init_pair(6, curses.COLOR_WHITE, curses.COLOR_RED)
+
     return update(stdscr, board)
+
+def log(stdscr, line, msg):
+    stdscr.move(line,1)
+    stdscr.addstr(msg)
 
 def update(stdscr, board):
     my, mx = stdscr.getmaxyx()
@@ -28,7 +36,11 @@ def update(stdscr, board):
         x = 0
         for col in row:
             if col != ' ':
-                stdscr.addstr(y + py, x + px, '  ', curses.color_pair(int(col) + 1))
+                if col in ['0', '1', '2']:
+                    stdscr.addstr(y + py, x + px, '  ', curses.color_pair(int(col) + 1))
+                else:
+                    stdscr.addstr(y + py, x + px, col + col, curses.color_pair(4))
+                    log(stdscr, 4, "%s (%s:%s)" % (col, y, x))
             x += 2
         y += 1
 

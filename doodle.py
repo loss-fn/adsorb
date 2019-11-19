@@ -15,6 +15,10 @@ class Game(object):
                          1 : p2, }
         self.actions = { 'QUIT'  : self._quit,
                          'PASS'  : self._pass,
+                         
+                         'MARK_PLACE'           : self._mark_place,
+                         'MARK_COPY_AND_REMOVE' : self._mark_copy_and_remove,
+
                          'PLACE' : self._place,
                          'REMOVE': self._remove,
                          'COPY'  : self._copy }
@@ -27,7 +31,11 @@ class Game(object):
         while True:
             action, y, x, direction = self.players[player].get_action(stdscr, player, self.board, py, px)
             status = self.actions[action](player, y, x, direction)
-            if status == 1:
+            view.log(stdscr, 1, "".join(self.board.board[0]))
+            if status == 10:
+                view.update(stdscr, self.board)
+
+            elif status == 100:
                 view.update(stdscr, self.board)
                 player = 1 - player
 
@@ -35,7 +43,15 @@ class Game(object):
         raise KeyboardInterrupt
 
     def _pass(self, player, *rest):
-        status = 1
+        status = 100
+        return status
+
+    def _mark_place(self, player, y, x, *rest):
+        status = self.board.mark_place(y, x)
+        return status
+
+    def _mark_copy_and_remove(self, player, y, x, *rest):
+        status = self.board.mark_copy_and_remove(y, x)
         return status
 
     def _place(self, player, y, x, *rest):
