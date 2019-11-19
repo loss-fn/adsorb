@@ -31,7 +31,7 @@ class Game(object):
         while True:
             action, y, x, direction = self.players[player].get_action(stdscr, player, self.board, py, px)
             status = self.actions[action](player, y, x, direction)
-            view.log(stdscr, 1, "".join(self.board.board[0]))
+            view.log(stdscr, 1, "%s (%s:%s)" % (action, y, x))
             if status == 10:
                 view.update(stdscr, self.board)
 
