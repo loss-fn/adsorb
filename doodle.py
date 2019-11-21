@@ -30,13 +30,13 @@ class Game(object):
         player = 0
         while True:
             action, y, x, direction = self.players[player].get_action(stdscr, player, self.board, py, px)
-            view.log(stdscr, 1, "%s (%s:%s) %s" % (action, y, x, direction))
+            view.log(stdscr, 1, "%s (%s:%s) %s. " % (action, y, x, direction))
             view.log(stdscr, 3, "".join(self.board.board[0]))
             view.log(stdscr, 4, "".join(self.board.board[1]))
             view.log(stdscr, 5, "".join(self.board.board[2]))
             view.log(stdscr, 6, "".join(self.board.board[3]))
             status = self.actions[action](player, y, x, direction)
-            view.log(stdscr, 8, "%s" % (status))
+            view.log(stdscr, 8, "status : %s. " % (status))
             view.log(stdscr, 9, "".join(self.board.board[0]))
             view.log(stdscr, 10, "".join(self.board.board[1]))
             view.log(stdscr, 11, "".join(self.board.board[2]))

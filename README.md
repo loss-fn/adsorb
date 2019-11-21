@@ -33,4 +33,14 @@ fill up empty adjacent squares. This goes for copying in any direction.
 #### Two
 
 Instead of being able to select _any_ square on the board the player is forced
-to build a chain by selecting a _next_ square to occupy.
+to build a chain by selecting an adjacent, _next_, square to occupy. This would
+create a different type of play where the initial position matters more.
+Essentially all moves would be to grow 1 group of squares.
+
+#### Variants
+
+In what is outlined above there's no way to remove an opponent's square but in
+order for the game not to become too simplistic we may have to introduce a way
+to _kill_ the other player's squares. Say that a group ratio of `4:1` is
+required to _copy over_ a group. That would at least avoid spread out squares
+played only to block the other player.
