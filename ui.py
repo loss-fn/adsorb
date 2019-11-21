@@ -41,16 +41,16 @@ def get_action(stdscr, player, board, py, px):
                     return 'REMOVE', _y, _x, 0
 
                 elif v == '↑':
-                    return 'COPY', _y, _x, 'UP'
+                    return 'COPY', _y + 1, _x, 'UP'
 
                 elif v == '↓':
-                    return 'COPY', _y, _x, 'DOWN'
+                    return 'COPY', _y - 1, _x, 'DOWN'
 
                 elif v == '←':
-                    return 'COPY', _y, _x, 'LEFT'
+                    return 'COPY', _y, _x + 1, 'LEFT'
 
                 elif v == '→':
-                    return 'COPY', _y, _x, 'RIGHT'
+                    return 'COPY', _y, _x - 1, 'RIGHT'
 
             except IndexError:
                 # player clicked outside of the board area

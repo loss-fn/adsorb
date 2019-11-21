@@ -34,11 +34,11 @@ class Board(object):
         self.board_copy = copy.deepcopy(self.board)
         if y > 0:
             self.board[y-1][x] = '↑'
-        if y < len(self.board):
+        if y < len(self.board) - 1:
             self.board[y+1][x] = '↓'
         if x > 0:
             self.board[y][x-1] = '←'
-        if x < len(self.board[0]):
+        if x < len(self.board[0]) - 1:
             self.board[y][x+1] = '→'
 
         self.board[y][x] = '-'
@@ -73,7 +73,7 @@ class Board(object):
            self.board_copy = None
                 
         if self.board[y][x] == str(p + 1):
-            if y > 0 and self.board[y-1][x] == 0:
+            if y > 0 and self.board[y-1][x] == '0':
                 status = 100
                 self.board[y-1][x] = str(p + 1)
         return status
