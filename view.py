@@ -40,7 +40,7 @@ def update(stdscr, board):
                     stdscr.addstr(y + py, x + px, '  ', curses.color_pair(int(col) + 1))
                 else:
                     stdscr.addstr(y + py, x + px, col + col, curses.color_pair(4))
-                    log(stdscr, 4, "%s (%s:%s)" % (col, y, x))
+                    #log(stdscr, 4, "%s (%s:%s)" % (col, y, x))
             x += 2
         y += 1
 
