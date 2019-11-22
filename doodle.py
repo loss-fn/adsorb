@@ -31,10 +31,10 @@ class Game(object):
         while True:
             action, y, x, direction = self.players[player].get_action(stdscr, player, self.board, py, px)
             view.log(stdscr, 1, "%s (%s:%s) %s. " % (action, y, x, direction))
-            view.log(stdscr, 3, "".join(self.board.board[0]))
-            view.log(stdscr, 4, "".join(self.board.board[1]))
-            view.log(stdscr, 5, "".join(self.board.board[2]))
-            view.log(stdscr, 6, "".join(self.board.board[3]))
+            try:
+                view.log(stdscr, 3, ",".join("%s:%s" % (_y,_x) for (_y,_x) in self.board._pos_conns[player][(y,x)]))
+            except KeyError:
+                pass
             status = self.actions[action](player, y, x, direction)
             view.log(stdscr, 8, "status : %s. " % (status))
             view.log(stdscr, 9, "".join(self.board.board[0]))
