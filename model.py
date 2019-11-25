@@ -82,12 +82,55 @@ class Board(object):
            self._board_copy = None
                 
         if self.board[y][x] == str(p + 1):
-            if y > 0 and self.board[y-1][x] == '0':
-                status = 100
-                self.board[y-1][x] = str(p + 1)
+            my, mx = y, x # mirrored coords
+
+            if direction == 'UP': my = y - 1
+            if direction == 'DOWN': my = y + 1
+            if direction == 'LEFT': mx = x - 1
+            if direction == 'RIGHT': mx = x + 1
+            
+            # keep original mirrored coords
+            omy, omx = my, mx
+
+            copied = []
+            # copy starting position
+            if self.board[my][mx] == '0':
+                self.board[my][mx] = self.board[y][x]
+                self._add_connections(p, my, mx)
+                copied.append((my,mx))
+
+            # copy all connected positions recursively
+            pos = self._pos_conns[p][(y,x)]
+            while len(pos) > 0:
+                cy, cx = pos.pop() # current coords
+
+                if (cy,cx) not in copied: # make sure not to copy a position
+                    copied.append((cy,cx)) # more than once
+
+                    # figure where the mirrored position (my,mx) for current is
+                    dy, dx = cy - y, cx - x # diff between current and original
+
+                    if direction in ['UP', 'DOWN']: my, mx = omy + (-1 * dy), omx + dx
+                    if direction in ['LEFT', 'RIGHT']: my, mx = omy + dy, omx + (-1 * dx)
+
+                    try:
+                        if self.board[my][mx] == '0':
+                            self.board[my][mx] = self.board[y][x]
+                            self._add_connections(p, my, mx)
+                            copied.append((my,mx))
+
+                            pos += self._pos_conns[p][(cy,cx)]
+                    except IndexError:
+                        pass
+                    
+            status = 100
+            
         return status
 
-    def _add_connections(self, p, y, x):
+    def _add_connections(self, p, y, x, updated = None):
+        if updated is None:
+            updated = [(y,x),]
+
         if p not in self._pos_conns.keys():
             self._pos_conns[p] = {}
 
@@ -98,10 +141,10 @@ class Board(object):
             try:
                 if self.board[_y][_x] == str(p + 1):
                     self._pos_conns[p][(y,x)].append((_y,_x))
-                    try:
-                        self._pos_conns[p][(_y,_x)].append((y,x))
-                    except KeyError:
-                        self._pos_conns[p][(_y,_x)] = [(y,x),]
+                    if (_y,_x) not in updated:
+                        updated.append((_y,_x))
+                        self._add_connections(p, _y, _x, updated)
+
             except IndexError:
                 pass
 
