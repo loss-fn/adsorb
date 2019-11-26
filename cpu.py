@@ -11,10 +11,10 @@ def get_action(_, player, board, py, px, max_attempts = 10):
         h, w = board.size
         y, x = random.randint(0, h - 1), random.randint(0, w - 1)
 
-        if board.get(y, x) == '0':
+        if board.board[y][x] == '0':
             return 'PLACE', y, x, 0
 
-        if board.get(y, x) == str(player + 1):
+        if board.board[y][x] == str(player + 1):
             return 'COPY', y, x, 'UP'
 
         if attempt >= max_attempts:

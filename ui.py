@@ -21,7 +21,7 @@ def get_action(stdscr, player, board, py, px):
                 # updating the board is a two-step process. First
                 # player's select a square and second they decide
                 # what action to take.
-                v = board.get(_y, _x)
+                v = board.board[_y][_x]
                 if v == '0':
                     # player clicked on an empty square
                     # add a '+' sign to indicate that 'place'

@@ -15,9 +15,6 @@ class Board(object):
         self._board_copy = None
         self._pos_conns= {} # (y,x) -> [(y,x), (y,x)]
 
-    def get(self, y, x):
-        return self.board[y][x]
-
     def mark_place(self, y, x):
         status = 10
         if self._board_copy is not None:
@@ -122,7 +119,7 @@ class Board(object):
                             pos += self._pos_conns[p][(cy,cx)]
                     except IndexError:
                         pass
-                    
+
             status = 100
             
         return status
