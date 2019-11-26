@@ -24,6 +24,15 @@ class Board(object):
 
         return True
 
+    def score(self):
+        p1, p2 = 0, 0
+        for row in self.board:
+            for col in row:
+                if col == '1': p1 += 1
+                if col == '2': p2 += 1
+
+        return p1, p2
+
     def mark_place(self, y, x):
         status = 10
         if self._board_copy is not None:

@@ -7,6 +7,9 @@ import cpu
 import view
 import model
 
+class Result(Exception):
+    pass
+
 class Game(object):
     def __init__(self, p1, p2):
         self.board = model.Board(height=4, width=4)
@@ -48,6 +51,8 @@ class Game(object):
                 view.update(stdscr, self.board)
                 player = 1 - player
 
+        raise Result(self.board.board, *self.board.score())
+
     def _quit(self, *rest):
         raise KeyboardInterrupt
 
@@ -81,3 +86,16 @@ if __name__ == "__main__":
         curses.wrapper(game.curses)
     except KeyboardInterrupt:
         pass
+    except Result as result:
+        board, p1_score, p2_score = result.args
+        if p1_score > p2_score:
+            print("P1 wins. (%d-%d p)" % (p1_score, p2_score))
+        elif p1_score < p2_score:
+            print("P2 wins. (%d-%d p)" % (p2_score, p1_score))
+        else:
+            print("Draw. (%d-%d p)" % (p2_score, p1_score))
+
+        print()
+        print("Board at game-over:")
+        for row in board:
+            print("".join(row))
