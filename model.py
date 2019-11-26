@@ -15,6 +15,15 @@ class Board(object):
         self._board_copy = None
         self._pos_conns= {} # (y,x) -> [(y,x), (y,x)]
 
+    def game_over(self):
+        # game is not over if there are empty squares left
+        for row in self.board:
+            for col in row:
+                if col == '0':
+                    return False
+
+        return True
+
     def mark_place(self, y, x):
         status = 10
         if self._board_copy is not None:

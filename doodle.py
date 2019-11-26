@@ -28,7 +28,7 @@ class Game(object):
 
         # main loop
         player = 0
-        while True:
+        while self.board.game_over() is not True:
             action, y, x, direction = self.players[player].get_action(stdscr, player, self.board, py, px)
             view.log(stdscr, 1, "%s (%s:%s) %s. " % (action, y, x, direction))
             try:
