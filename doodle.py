@@ -54,7 +54,7 @@ class Game(object):
         raise Result(self.board.board, *self.board.score())
 
     def _quit(self, *rest):
-        raise KeyboardInterrupt
+        raise KeyboardInterrupt(self.board.board, *self.board.score())
 
     def _pass(self, player, *rest):
         status = 100
@@ -84,8 +84,17 @@ if __name__ == "__main__":
     try:
         game = Game(p1 = ui, p2 = cpu)
         curses.wrapper(game.curses)
-    except KeyboardInterrupt:
-        pass
+    except KeyboardInterrupt as quit:
+        board, p1_score, p2_score = quit.args
+
+        print("User quit before game over.")
+        print("P1 %d p - P2 %d p" % (p1_score, p2_score))
+
+        print()
+        print("Board when quitting:")
+        for row in board:
+            print("".join(row))
+
     except Result as result:
         board, p1_score, p2_score = result.args
         if p1_score > p2_score:
