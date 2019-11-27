@@ -1,11 +1,10 @@
 ## adsorb
 
 import argparse
+import importlib
 
 import curses
 
-import ui
-import cpu
 import view
 import model
 
@@ -13,11 +12,10 @@ class Result(Exception):
     pass
 
 class Game(object):
-    def __init__(self, width, height, p1, p2):
+    def __init__(self, width, height, players):
         self.board = model.Board(height = height, width = width)
 
-        self.players = { 0 : p1,
-                         1 : p2, }
+        self.players = players
         self.actions = { 'QUIT'  : self._quit,
                          'PASS'  : self._pass,
                          
@@ -36,16 +34,7 @@ class Game(object):
         while self.board.game_over() is not True:
             action, y, x, direction = self.players[player].get_action(stdscr, player, self.board, py, px)
             view.log(stdscr, 1, "%s (%s:%s) %s. " % (action, y, x, direction))
-            try:
-                view.log(stdscr, 3, ",".join("%s:%s" % (_y,_x) for (_y,_x) in self.board._pos_conns[player][(y,x)]))
-            except KeyError:
-                pass
             status = self.actions[action](player, y, x, direction)
-            view.log(stdscr, 8, "status : %s. " % (status))
-            view.log(stdscr, 9, "".join(self.board.board[0]))
-            view.log(stdscr, 10, "".join(self.board.board[1]))
-            view.log(stdscr, 11, "".join(self.board.board[2]))
-            view.log(stdscr, 12, "".join(self.board.board[3]))
             if status == 10:
                 view.update(stdscr, self.board)
 
@@ -84,14 +73,27 @@ class Game(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'ADSORB v 0.1 (curses)')
-    parser.add_argument('players', metavar = 'player', nargs = '+', help = 'list of players, h = human, c = computer')
-    parser.add_argument('--width', default = 10, type = int, help = 'width of board')
-    parser.add_argument('--height', default = 10, type = int, help = 'height of board')
+    parser.add_argument('players', metavar = 'player', nargs = '+',
+                        help = 'list of players (ui = human, cpu = computer,' + \
+                        ' <filename> = your AI player)')
+    parser.add_argument('--width', default = 10, type = int,
+                        choices = range(8, 25, 4), help = 'width of board')
+    parser.add_argument('--height', default = 10, type = int,
+                        choices = range(8, 25, 4), help = 'height of board')
     args = parser.parse_args()
-    width, height = args.width, args.height
-    print(args)
+
+    if len(args.players) > 4:
+        raise argparse.ArgumentTypeError("")
+
+    n = 0
+    _players = {}
+    for player in args.players:
+        i = importlib.import_module(player)
+        _players[n] = i
+        n += 1
+
     try:
-        game = Game(width, height, p1 = ui, p2 = cpu)
+        game = Game(args.width, args.height, _players)
         curses.wrapper(game.curses)
 
     except KeyboardInterrupt as quit:
