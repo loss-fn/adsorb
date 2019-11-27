@@ -19,7 +19,7 @@ class Board(object):
         # game is not over if there are empty squares left
         for row in self.board:
             for col in row:
-                if col == '0':
+                if col in ['0', '↑', '↓', '←', '→', '-', '+']:
                     return False
 
         return True
