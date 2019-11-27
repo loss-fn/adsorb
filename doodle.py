@@ -12,10 +12,15 @@ class Result(Exception):
     pass
 
 class Game(object):
-    def __init__(self, width, height, players):
+    def __init__(self, width, height, players, log):
         self.board = model.Board(height = height, width = width)
-
         self.players = players
+        self.log = log
+        if log is not None:
+            self.log = open(log, 'w')
+            self.log.write("Starting %sH x %sW game with %s players.\n" % \
+                (height, width, len(players)))
+
         self.actions = { 'QUIT'  : self._quit,
                          'PASS'  : self._pass,
                          
@@ -32,9 +37,15 @@ class Game(object):
         # main loop
         player = 0
         while self.board.game_over() is not True:
-            action, y, x, direction = self.players[player].get_action(stdscr, player, self.board, py, px)
-            view.log(stdscr, 1, "%s (%s:%s) %s. " % (action, y, x, direction))
+            action, y, x, direction = \
+                    self.players[player].get_action(stdscr, player,
+                                                    self.board,
+                                                    py, px)
             status = self.actions[action](player, y, x, direction)
+            if self.log:
+                self.log.write("[%s] P%s %s (%s:%s) %s\n" % \
+                        (status, player + 1, action, y, x, direction))
+
             if status == 10:
                 view.update(stdscr, self.board)
 
@@ -80,6 +91,8 @@ if __name__ == "__main__":
                         choices = range(8, 25, 4), help = 'width of board')
     parser.add_argument('--height', default = 10, type = int,
                         choices = range(8, 25, 4), help = 'height of board')
+    parser.add_argument('--log', default = None, type = str,
+                        help = 'filename to log game state to')
     args = parser.parse_args()
 
     if len(args.players) > 4:
@@ -93,7 +106,7 @@ if __name__ == "__main__":
         n += 1
 
     try:
-        game = Game(args.width, args.height, _players)
+        game = Game(args.width, args.height, _players, args.log)
         curses.wrapper(game.curses)
 
     except KeyboardInterrupt as quit:
