@@ -115,7 +115,18 @@ class Board(object):
                 copied.append((my,mx))
 
             # copy all connected positions recursively
-            pos = self._pos_conns[p][(y,x)]
+            try:
+                pos = self._pos_conns[p][(y,x)]
+            except KeyError as e:
+                fout = open('crash.txt', 'w')
+                for p in self._pos_conns.keys():
+                    fout.write("%s\n" % (p))
+                    for pos in self._pos_conns[p].keys():
+                        fout.write(" %s:%s\n" % (pos))
+                        fout.write("  %s\n" % (self._pos_conns[p][pos]))
+                fout.close()
+                raise e
+                
             while len(pos) > 0:
                 cy, cx = pos.pop() # current coords
 
