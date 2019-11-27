@@ -1,5 +1,7 @@
 ## adsorb
 
+import argparse
+
 import curses
 
 import ui
@@ -11,8 +13,8 @@ class Result(Exception):
     pass
 
 class Game(object):
-    def __init__(self, p1, p2):
-        self.board = model.Board(height=4, width=4)
+    def __init__(self, width, height, p1, p2):
+        self.board = model.Board(height = height, width = width)
 
         self.players = { 0 : p1,
                          1 : p2, }
@@ -81,14 +83,22 @@ class Game(object):
         return status
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description = 'ADSORB v 0.1 (curses)')
+    parser.add_argument('players', metavar = 'player', nargs = '+', help = 'list of players, h = human, c = computer')
+    parser.add_argument('--width', default = 10, type = int, help = 'width of board')
+    parser.add_argument('--height', default = 10, type = int, help = 'height of board')
+    args = parser.parse_args()
+    width, height = args.width, args.height
+    print(args)
     try:
-        game = Game(p1 = ui, p2 = cpu)
+        game = Game(width, height, p1 = ui, p2 = cpu)
         curses.wrapper(game.curses)
+
     except KeyboardInterrupt as quit:
         board, p1_score, p2_score = quit.args
 
         print("User quit before game over.")
-        print("P1 %d p - P2 %d p" % (p1_score, p2_score))
+        print("P1 %dp - P2 %dp" % (p1_score, p2_score))
 
         print()
         print("Board when quitting:")
