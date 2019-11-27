@@ -41,15 +41,23 @@ class Game(object):
                     self.players[player].get_action(stdscr, player,
                                                     self.board,
                                                     py, px)
-            status = self.actions[action](player, y, x, direction)
-            if self.log:
-                self.log.write("[%s] P%s %s (%s:%s) %s\n" % \
-                        (status, player + 1, action, y, x, direction))
+            log_msg = "P%s %s (%s:%s) %s" % (player + 1, action, y, x, direction)
+            try:
+                status = self.actions[action](player, y, x, direction)
+            except Exception:
+                status = 0
 
-            if status == 10:
+            if self.log:
+                self.log.write("[%s] %s\n" % \
+                        (status, log_msg))
+
+            if status == 0: # fail
+                pass
+
+            elif status == 10: # step 1 (of 2)
                 view.update(stdscr, self.board)
 
-            elif status == 100:
+            elif status == 100: # ok
                 view.update(stdscr, self.board)
                 player = 1 - player
 
