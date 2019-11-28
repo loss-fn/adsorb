@@ -145,8 +145,16 @@ if __name__ == "__main__":
     n = 0
     _players = {}
     for player in args.players:
-        i = importlib.import_module(player)
+        try:
+            mod, pl = player.split('.')
+        except ValueError:
+            mod, pl = player, None
+
+        i = importlib.import_module(mod)
         _players[n] = i
+        if pl:
+            _players[n] = i.__dict__[pl]()
+
         n += 1
 
     try:
@@ -158,6 +166,9 @@ if __name__ == "__main__":
         if type(result) == KeyboardInterrupt:
             print("User quit before game over.")
             print()
+
+        if type(result) not in [KeyboardInterrupt, Result]:
+            raise result
 
     finally:
         if n == 1:
