@@ -15,6 +15,7 @@ class Game(object):
     def __init__(self, width, height, players, log):
         self.board = model.Board(height = height, width = width)
         self.players = players
+        self.num_players = len(self.players.keys())
         self.log = log
         if log is not None:
             self.log = open(log, 'w')
@@ -59,21 +60,27 @@ class Game(object):
 
             elif status == 100: # ok
                 view.update(stdscr, self.board)
-                player = 1 - player
+                player = player + 1
+                if player >= self.num_players:
+                    player = 0
 
         if self.log:
             for row in self.board.board:
                 self.log.write("".join(row) + "\n")
 
-            p1_score, p2_score = self.board.score()
-            self.log.write("P1 %sp, P2 %sp\n" % (p1_score, p2_score))
+            scores = self.board.score()
+            p, msg = 1, ""
+            for score in scores:
+                msg += "P%d %sp, " % (p, score)
+                p += 1
+            self.log.write(msg[:-2])
 
             self.log.close()
 
-        raise Result(self.board.board, *self.board.score())
+        raise Result(self.board.board, self.board.score(self.num_players))
 
     def _quit(self, *rest):
-        raise KeyboardInterrupt(self.board.board, *self.board.score())
+        raise KeyboardInterrupt(self.board.board, self.board.score(self.num_players))
 
     def _pass(self, player, *rest):
         status = 100
@@ -127,26 +134,22 @@ if __name__ == "__main__":
         curses.wrapper(game.curses)
 
     except KeyboardInterrupt as quit:
-        board, p1_score, p2_score = quit.args
-
+        board, scores = quit.args
         print("User quit before game over.")
-        print("P1 %dp - P2 %dp" % (p1_score, p2_score))
-
-        print()
-        print("Board when quitting:")
-        for row in board:
-            print("".join(row))
 
     except Result as result:
-        board, p1_score, p2_score = result.args
-        if p1_score > p2_score:
-            print("P1 wins. (%d-%d p)" % (p1_score, p2_score))
-        elif p1_score < p2_score:
-            print("P2 wins. (%d-%d p)" % (p2_score, p1_score))
-        else:
-            print("Draw. (%d-%d p)" % (p2_score, p1_score))
+        board, scores = result.args
+
+    finally:
+        print()
+        print("Scores:")
+        p, msg = 1, ""
+        for score in scores:
+            msg += "P%d %sp, " % (p, score)
+            p += 1
+        print(msg[:-2])
 
         print()
-        print("Board at game-over:")
+        print("Board:")
         for row in board:
             print("".join(row))

@@ -24,14 +24,16 @@ class Board(object):
 
         return True
 
-    def score(self):
-        p1, p2 = 0, 0
+    def score(self, num_players):
+        p1, p2, p3, p4 = 0, 0, 0, 0
         for row in self.board:
             for col in row:
                 if col == '1': p1 += 1
                 if col == '2': p2 += 1
+                if col == '3': p3 += 1
+                if col == '4': p4 += 1
 
-        return p1, p2
+        return [p1, p2, p3, p4][:num_players]
 
     def mark_place(self, y, x):
         status = 10

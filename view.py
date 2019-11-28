@@ -13,10 +13,9 @@ def init(stdscr, board):
     curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_WHITE)
     curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_GREEN)
     curses.init_pair(3, curses.COLOR_RED, curses.COLOR_RED)
-
-    curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_WHITE)
-    curses.init_pair(5, curses.COLOR_BLACK, curses.COLOR_GREEN)
-    curses.init_pair(6, curses.COLOR_WHITE, curses.COLOR_RED)
+    curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLUE)
+    curses.init_pair(5, curses.COLOR_CYAN, curses.COLOR_CYAN)
+    curses.init_pair(6, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
     return update(stdscr, board)
 
@@ -36,11 +35,10 @@ def update(stdscr, board):
         x = 0
         for col in row:
             if col != ' ':
-                if col in ['0', '1', '2']:
+                if col in ['0', '1', '2', '3', '4']:
                     stdscr.addstr(y + py, x + px, '  ', curses.color_pair(int(col) + 1))
                 else:
-                    stdscr.addstr(y + py, x + px, col + col, curses.color_pair(4))
-                    #log(stdscr, 4, "%s (%s:%s)" % (col, y, x))
+                    stdscr.addstr(y + py, x + px, col + col, curses.color_pair(6))
             x += 2
         y += 1
 
