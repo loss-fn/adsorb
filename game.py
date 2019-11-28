@@ -129,8 +129,9 @@ class Game(object):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'ADSORB v 0.1 (curses)')
     parser.add_argument('players', metavar = 'player', nargs = '+',
-                        help = 'list of players (ui = human, cpu = computer,' + \
-                        ' <filename> = your AI player)')
+                        help = 'list of players (ui = human,' + \
+                        ' cpu.Random = crappy computer player,' + \
+                        ' <filename>.<class> = your AI player)')
     parser.add_argument('--width', default = 10, type = int,
                         choices = range(8, 25, 4), help = 'width of board')
     parser.add_argument('--height', default = 10, type = int,
