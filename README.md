@@ -32,6 +32,6 @@ fill up empty adjacent squares. This goes for copying in any direction.
 
 1. The `copy` function doesn't work as intended. It should not allow a `copy`
 action in a blocked direction. But it does. I need to fix that.
-2. The board is just a square at the moment. I need to fix a shape generator.
+2. ~~The board is just a square at the moment. I need to fix a shape generator.~~
 3. The `cpu.Random` player is a bit boring to test the game against. I need
 to upgrade that to something smarter.
