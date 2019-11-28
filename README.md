@@ -8,13 +8,11 @@ Players compete to occupy as much space on the board as possible. There are a
 limited number of actions that can be made each turn. The player who occupy
 the most squares when the board is full wins.
 
-### Game play variants
+### Game play
 
-#### One
-
-A player can either `add` one (1) square, `remove` a group of squares (1-n) or
-`copy` a group of sqaures (1-n) into adjacent squares. Copying can be done in
-any direction, and from any square in the group, as long as the destination
+A player can either `add` one (1) square, `remove` a square (1) or `copy` a
+group of sqaures (1 - n) into adjacent squares. Copying can be done in any
+direction, and from any square in the group, as long as the destination
 squares are unoccupied. The square that is selected is considerd the edge of
 the group in the direction the copying is performed, regardless of whether or
 not it actually IS an edge.
@@ -30,17 +28,10 @@ fill up empty adjacent squares. This goes for copying in any direction.
 4 . * * .                     4 . * * .                     4 . * * .
 ```
 
-#### Two
+#### TODO
 
-Instead of being able to select _any_ square on the board the player is forced
-to build a chain by selecting an adjacent, _next_, square to occupy. This would
-create a different type of play where the initial position matters more.
-Essentially all moves would be to grow 1 group of squares.
-
-#### Variants
-
-In what is outlined above there's no way to remove an opponent's square but in
-order for the game not to become too simplistic we may have to introduce a way
-to _kill_ the other player's squares. Say that a group ratio of `4:1` is
-required to _copy over_ a group. That would at least avoid spread out squares
-played only to block the other player.
+1. The `copy` function doesn't work as intended. It should not allow a `copy`
+action in a blocked direction. But it does. I need to fix that.
+2. The board is just a square at the moment. I need to fix a shape generator.
+3. The `cpu.Random` player is a bit boring to test the game against. I need
+to upgrade that to something smarter.
