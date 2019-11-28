@@ -61,6 +61,15 @@ class Game(object):
                 view.update(stdscr, self.board)
                 player = 1 - player
 
+        if self.log:
+            for row in self.board.board:
+                self.log.write("".join(row) + "\n")
+
+            p1_score, p2_score = self.board.score()
+            self.log.write("P1 %sp, P2 %sp\n" % (p1_score, p2_score))
+
+            self.log.close()
+
         raise Result(self.board.board, *self.board.score())
 
     def _quit(self, *rest):
