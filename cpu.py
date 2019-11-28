@@ -2,8 +2,6 @@
 
 import random
 
-import curses
-
 def get_action(_, player, board, py, px, max_attempts = 10):
     attempt = 0
     while True:
