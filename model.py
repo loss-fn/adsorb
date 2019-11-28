@@ -10,11 +10,14 @@ class Board(object):
         if width is None: width = 12
 
         self.size = (height, width)
-        self.board = [['0' for _ in range(width)] for _ in range(height)]
+        self.board = self.generate_board(height, width)
         
         self._board_copy = None
         self._pos_conns= {} # (y,x) -> [(y,x), (y,x)]
 
+    def generate_board(self, height, width):
+        return [['0' for _ in range(width)] for _ in range(height)]
+    
     def game_over(self):
         # game is not over if there are empty squares left
         for row in self.board:
