@@ -16,8 +16,28 @@ class Board(object):
         self._pos_conns= {} # (y,x) -> [(y,x), (y,x)]
 
     def generate_board(self, height, width):
-        return [['0' for _ in range(width)] for _ in range(height)]
-    
+        result = [[' ' for _ in range(width)] for _ in range(height)]
+        for n in range(random.choice([2,3,4])):
+            h = random.choice([0.6, 0.7, 0.8, 0.9])
+            w = random.choice([0.6, 0.7, 0.8, 0.9])
+
+            y = random.randrange(0, int(height / 2))
+            x = random.randrange(0, int(width / 2))
+
+            # plot box on board
+            yy = y
+            for _ in range(int(height * h)):
+                xx = x
+                for _ in range(int(width * w)):
+                    try:
+                        result[yy][xx] = '0'
+                    except IndexError:
+                        pass
+                    xx += 1
+                yy += 1
+
+        return result
+
     def game_over(self):
         # game is not over if there are empty squares left
         for row in self.board:
