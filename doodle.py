@@ -14,8 +14,12 @@ class Result(Exception):
 class Game(object):
     def __init__(self, width, height, players, log):
         self.board = model.Board(height = height, width = width)
+
         self.players = players
         self.num_players = len(self.players.keys())
+        if self.num_players == 1:
+            self.moves = 0
+
         self.log = log
         if log is not None:
             self.log = open(log, 'w')
@@ -64,23 +68,39 @@ class Game(object):
                 if player >= self.num_players:
                     player = 0
 
+                # in solitaire mode we count moves instead
+                if self.num_players == 1:
+                    self.moves += 1
+
         if self.log:
             for row in self.board.board:
                 self.log.write("".join(row) + "\n")
 
-            scores = self.board.score()
-            p, msg = 1, ""
-            for score in scores:
-                msg += "P%d %sp, " % (p, score)
-                p += 1
-            self.log.write(msg[:-2])
+            if self.num_players == 1:
+                self.log.write("%s moves" % (self.moves))
+
+            else:
+                scores = self.board.score(self.num_players)
+                p, msg = 1, ""
+                for score in scores:
+                    msg += "P%d %sp, " % (p, score)
+                    p += 1
+                self.log.write(msg[:-2])
 
             self.log.close()
 
-        raise Result(self.board.board, self.board.score(self.num_players))
+        if self.num_players == 1:
+            raise Result(self.board.board, None, self.moves)
+
+        else:
+            raise Result(self.board.board, self.board.score(self.num_players), None)
 
     def _quit(self, *rest):
-        raise KeyboardInterrupt(self.board.board, self.board.score(self.num_players))
+        if self.num_players == 1:
+            raise KeyboardInterrupt(self.board.board, None, self.moves)
+
+        else:
+            raise KeyboardInterrupt(self.board.board, self.board.score(self.num_players), None)
 
     def _pass(self, player, *rest):
         status = 100
@@ -133,23 +153,25 @@ if __name__ == "__main__":
         game = Game(args.width, args.height, _players, args.log)
         curses.wrapper(game.curses)
 
-    except KeyboardInterrupt as quit:
-        board, scores = quit.args
-        print("User quit before game over.")
-
-    except Result as result:
-        board, scores = result.args
+    except Exception as quit:
+        board, scores, moves = quit.args
+        if type(quit) == KeyboardInterrupt:
+            print("User quit before game over.")
+            print()
 
     finally:
-        print()
-        print("Scores:")
-        p, msg = 1, ""
-        for score in scores:
-            msg += "P%d %sp, " % (p, score)
-            p += 1
-        print(msg[:-2])
+        if len(args.players) == 1:
+            print("%s moves" % (moves))
+            
+        else:
+            print("Scores:")
+            p, msg = 1, ""
+            for score in scores:
+                msg += "P%d %sp, " % (p, score)
+                p += 1
+            print(msg[:-2])
 
-        print()
-        print("Board:")
-        for row in board:
-            print("".join(row))
+            print()
+            print("Board:")
+            for row in board:
+                print("".join(row))
