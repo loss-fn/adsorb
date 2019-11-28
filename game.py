@@ -153,25 +153,25 @@ if __name__ == "__main__":
         game = Game(args.width, args.height, _players, args.log)
         curses.wrapper(game.curses)
 
-    except Exception as quit:
-        board, scores, moves = quit.args
-        if type(quit) == KeyboardInterrupt:
+    except Exception as result:
+        args = result.args
+        if type(result) == KeyboardInterrupt:
             print("User quit before game over.")
             print()
 
     finally:
-        if len(args.players) == 1:
-            print("%s moves" % (moves))
+        if n == 1:
+            print("%s moves" % (args[2]))
             
         else:
             print("Scores:")
             p, msg = 1, ""
-            for score in scores:
+            for score in args[1]:
                 msg += "P%d %sp, " % (p, score)
                 p += 1
             print(msg[:-2])
 
             print()
             print("Board:")
-            for row in board:
+            for row in args[0]:
                 print("".join(row))
