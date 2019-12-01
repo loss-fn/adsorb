@@ -17,7 +17,7 @@ class Board(object):
 
     def generate_board(self, height, width):
         result = [[' ' for _ in range(width)] for _ in range(height)]
-        for n in range(random.choice([2,3,4])):
+        for _ in range(random.choice([2,3,4])):
             h = random.choice([0.6, 0.7, 0.8, 0.9])
             w = random.choice([0.6, 0.7, 0.8, 0.9])
 

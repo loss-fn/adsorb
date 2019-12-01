@@ -70,4 +70,7 @@ to upgrade that to something smarter.
 
 #### BUGS
 
-1. Quitting the game doesn't work as intended: `TypeError: 'Namespace' object does not support indexing`
+1. Quitting the game doesn't work as intended:
+`TypeError: 'Namespace' object does not support indexing`
+2. If the terminal is smaller than the board requires, curses is not happy,
+`_curses.error: addwstr() returned ERR`
