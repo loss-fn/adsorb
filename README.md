@@ -67,3 +67,7 @@ action in a blocked direction. But it does. I need to fix that.
 3. The `cpu.Random` player is a bit boring to test the game against. I need
 to upgrade that to something smarter.
 4. Test the game on Windows and Linux platforms.
+
+#### BUGS
+
+1. Quitting the game doesn't work as intended: `TypeError: 'Namespace' object does not support indexing`
