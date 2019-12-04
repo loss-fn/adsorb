@@ -182,10 +182,10 @@ class Board(object):
                 if self.board[cy][cx] == str(p + 1):
                     result.append((cy,cx))
 
-                # check left, up, right and down
-                if cx > 0: todo.append((cy,cx-1))
-                if cy > 0: todo.append((cy-1,cx))
-                if cx < self.size[1] - 1: todo.append((cy,cx+1))
-                if cy < self.size[0] - 1: todo.append((cy+1,cx))
+                    # check left, up, right and down
+                    if cx > 0: todo.append((cy,cx-1))
+                    if cy > 0: todo.append((cy-1,cx))
+                    if cx < self.size[1] - 1: todo.append((cy,cx+1))
+                    if cy < self.size[0] - 1: todo.append((cy+1,cx))
 
         return result
