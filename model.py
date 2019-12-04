@@ -12,7 +12,7 @@ class Board(object):
         self.size = (height, width)
         self.board = self.generate_board(height, width)
         
-        self._board_copy = None
+        self._board_copy, self._board_copy_2 = None, None
         self._pos_conns= {} # (y,x) -> [(y,x), (y,x)]
 
     def generate_board(self, height, width):
@@ -68,23 +68,32 @@ class Board(object):
         self.board[y][x] = '+'
         return status
 
-    def mark_copy_and_remove(self, y, x):
+    def mark_copy_and_remove(self, p, y, x):
         status = 10
         if self._board_copy is not None:
            self.board = copy.deepcopy(self._board_copy)
            self._board_copy = None
            
+        self._board_copy_2 = copy.deepcopy(self.board)
         self._board_copy = copy.deepcopy(self.board)
-        if y > 0:
+        if y > 0 and self.copy(p, y, x, 'UP', test = True) == 100:
             self.board[y-1][x] = '↑'
-        if y < len(self.board) - 1:
+
+        if y < len(self.board) - 1 and \
+                self.copy(p, y, x, 'DOWN', test = True) == 100:
             self.board[y+1][x] = '↓'
-        if x > 0:
+
+        if x > 0 and self.copy(p, y, x, 'LEFT', test = True) == 100:
             self.board[y][x-1] = '←'
-        if x < len(self.board[0]) - 1:
+
+        if x < len(self.board[0]) - 1 and \
+                self.copy(p, y, x, 'RIGHT', test = True) == 100:
             self.board[y][x+1] = '→'
 
         self.board[y][x] = '-'
+
+        self._board_copy = self._board_copy_2
+        self._board_copy_2 = None
         return status
 
     def place(self, p, y, x):
@@ -96,8 +105,6 @@ class Board(object):
         if self.board[y][x] == '0':
             status = 100
             self.board[y][x] = str(p + 1)
-
-            self._add_connections(p, y, x)
 
         return status
 
@@ -111,90 +118,74 @@ class Board(object):
             status = 100
             self.board[y][x] = '0'
 
-            self._del_connections(p, y, x)
-
         return status
 
-    def copy(self, p, y, x, direction):
+    def within_bounds(self, y, x):
+        if y < 0 or x < 0 or y >= self.size[0] or x >= self.size[1]:
+            return False
+        return True
+
+    def copy(self, p, y, x, direction, test = False):
         status = 0
         if self._board_copy is not None:
            self.board = copy.deepcopy(self._board_copy)
            self._board_copy = None
                 
-        if self.board[y][x] == str(p + 1):
-            my, mx = y, x # mirrored coords
+        my, mx = y, x # mirrored coords
 
-            if direction == 'UP': my = y - 1
-            if direction == 'DOWN': my = y + 1
-            if direction == 'LEFT': mx = x - 1
-            if direction == 'RIGHT': mx = x + 1
-            
-            # keep original mirrored coords
-            omy, omx = my, mx
+        if direction == 'UP': my = y - 1
+        if direction == 'DOWN': my = y + 1
+        if direction == 'LEFT': mx = x - 1
+        if direction == 'RIGHT': mx = x + 1
+        
+        # keep original mirrored coords
+        omy, omx = my, mx
+        if not self.within_bounds(my, mx):
+            return status
 
-            copied = []
-            # copy starting position
-            if self.board[my][mx] == '0':
-                self.board[my][mx] = self.board[y][x]
-                self._add_connections(p, my, mx)
-                copied.append((my,mx))
+        group, copied = self._get_group(p, y, x), []
+        while len(group) > 0:
+            cy, cx = group.pop(0) # current coords
 
-            # copy all connected positions recursively
-            pos = self._pos_conns[p][(y,x)]
-            while len(pos) > 0:
-                cy, cx = pos.pop() # current coords
+            if (cy,cx) not in copied:  # make sure not to copy a position
+                copied.append((cy,cx)) # more than once
 
-                if (cy,cx) not in copied: # make sure not to copy a position
-                    copied.append((cy,cx)) # more than once
+                # figure out where the mirrored position (my,mx) for current is
+                dy, dx = cy - y, cx - x # diff between current and original
 
-                    # figure where the mirrored position (my,mx) for current is
-                    dy, dx = cy - y, cx - x # diff between current and original
+                if direction in ['UP', 'DOWN']: my, mx = omy + (-1 * dy), omx + dx
+                if direction in ['LEFT', 'RIGHT']: my, mx = omy + dy, omx + (-1 * dx)
 
-                    if direction in ['UP', 'DOWN']: my, mx = omy + (-1 * dy), omx + dx
-                    if direction in ['LEFT', 'RIGHT']: my, mx = omy + dy, omx + (-1 * dx)
-
-                    try:
+                try:
+                    if test:
+                        if self.board[my][mx] != '0':
+                            return 0
+                    else:
                         if self.board[my][mx] == '0':
                             self.board[my][mx] = self.board[y][x]
-                            self._add_connections(p, my, mx)
                             copied.append((my,mx))
 
-                            pos += self._pos_conns[p][(cy,cx)]
-                    except IndexError:
-                        pass
+                except IndexError:
+                    pass
 
-            status = 100
-            
+        status = 100
         return status
 
-    def _add_connections(self, p, y, x, updated = None):
-        if updated is None:
-            updated = [(y,x),]
+    def _get_group(self, p, y, x):
+        todo, done, result = [(y,x),], [], []
+        while len(todo) > 0:
+            cy, cx = todo.pop() # current coords
+            if (cy,cx) not in done: # make sure not to copy a position
+                done.append((cy,cx)) # more than once
 
-        if p not in self._pos_conns.keys():
-            self._pos_conns[p] = {}
+                # is this position part of the group?
+                if self.board[cy][cx] == str(p + 1):
+                    result.append((cy,cx))
 
-        if (y,x) not in self._pos_conns[p].keys():
-            self._pos_conns[p][(y,x)] = []
-            
-        for _y, _x in [(y-1,x), (y+1,x), (y,x-1), (y,x+1)]:
-            try:
-                if self.board[_y][_x] == str(p + 1):
-                    self._pos_conns[p][(y,x)].append((_y,_x))
-                    if (_y,_x) not in updated:
-                        updated.append((_y,_x))
-                        self._add_connections(p, _y, _x, updated)
+                # check left, up, right and down
+                if cx > 0: todo.append((cy,cx-1))
+                if cy > 0: todo.append((cy-1,cx))
+                if cx < self.size[1] - 1: todo.append((cy,cx+1))
+                if cy < self.size[0] - 1: todo.append((cy+1,cx))
 
-            except IndexError:
-                pass
-
-    def _del_connections(self, p, y, x):
-        if p not in self._pos_conns.keys():
-            raise Exception("This can't happen!(TM)")
-
-        for _y, _x in self._pos_conns[p][(y,x)]:
-            try:
-                self._pos_conns[p][(_y,_x)].remove((y,x))
-            except Exception:
-                raise Exception("This can't happen!(TM)")
-        del self._pos_conns[p][(y,x)]
+        return result

@@ -111,7 +111,7 @@ class Game(object):
         return status
 
     def _mark_copy_and_remove(self, player, y, x, *rest):
-        status = self.board.mark_copy_and_remove(y, x)
+        status = self.board.mark_copy_and_remove(player, y, x)
         return status
 
     def _place(self, player, y, x, *rest):
