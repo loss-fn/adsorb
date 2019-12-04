@@ -158,7 +158,7 @@ class Board(object):
 
                 try:
                     if test:
-                        if self.board[my][mx] != '0':
+                        if self.board[my][mx] not in ['0', str(p + 1)]:
                             return 0
                     else:
                         if self.board[my][mx] == '0':
