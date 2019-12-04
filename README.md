@@ -61,8 +61,8 @@ Board:
 
 #### TODO
 
-1. The `copy` function doesn't work as intended. It should not allow a `copy`
-action in a blocked direction. But it does. I need to fix that.
+1. ~~The `copy` function doesn't work as intended. It should not allow a `copy`
+action in a blocked direction. But it does. I need to fix that.~~
 2. ~~The board is just a square at the moment. I need to fix a shape generator.~~
 3. The `cpu.Random` player is a bit boring to test the game against. I need
 to upgrade that to something smarter.
@@ -70,7 +70,7 @@ to upgrade that to something smarter.
 
 #### BUGS
 
-1. Quitting the game doesn't work as intended:
-`TypeError: 'Namespace' object does not support indexing`
+1. ~~Quitting the game doesn't work as intended:
+`TypeError: 'Namespace' object does not support indexing`~~
 2. If the terminal is smaller than the board requires, curses is not happy,
 `_curses.error: addwstr() returned ERR`

@@ -164,12 +164,14 @@ if __name__ == "__main__":
 
     except Exception as result:
         args = result.args
-        if type(result) == KeyboardInterrupt:
-            print("User quit before game over.")
-            print()
-
-        if type(result) not in [KeyboardInterrupt, Result]:
+        if type(result) != Result:
             raise result
+
+    except KeyboardInterrupt as abort:
+        args = abort.args
+
+        print("User quit before game over.")
+        print()
 
     finally:
         if n == 1:
